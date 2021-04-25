@@ -8,7 +8,7 @@ import { AuthModule } from './auth/auth.module';
   imports: [
     TasksModule,
     TypeOrmModule.forRoot(typeOrmConfig),
-    AuthModule
+    AuthModule,
   ],
   controllers: []
 })
