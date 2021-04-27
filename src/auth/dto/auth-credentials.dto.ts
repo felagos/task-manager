@@ -15,3 +15,9 @@ export class AuthCredentialsDto {
     password: string;
 
 }
+
+export class AuthCredentialSalt extends AuthCredentialsDto {
+
+    salt: string;
+
+}

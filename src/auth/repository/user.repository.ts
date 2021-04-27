@@ -1,18 +1,20 @@
 import { ConflictException, InternalServerErrorException } from "@nestjs/common";
 import { DatabaseError } from "src/enums/database-error.enum";
 import { EntityRepository, Repository } from "typeorm";
-import { AuthCredentialsDto } from "../dto/auth-credentials.dto";
+import { AuthCredentialSalt } from "../dto/auth-credentials.dto";
 import { User } from "../entity/user.entity";
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
 
-    async singUp(credentials: AuthCredentialsDto): Promise<void> {
-        const { username, password } = credentials;
+    async singUp(credentials: AuthCredentialSalt): Promise<void> {
+        const { username, password, salt } = credentials;
 
-        const user = new User();
+        const user: User = new User();
         user.username = username;
         user.password = password;
+        user.salt = salt;
+
         try {
             await user.save();
         } catch (error) {
