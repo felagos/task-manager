@@ -1,5 +1,5 @@
 import { ConflictException, InternalServerErrorException } from "@nestjs/common";
-import { DatabaseError } from "src/enums/database-error.enum";
+import { DatabaseError } from "../../enums/database-error.enum";
 import { EntityRepository, Repository } from "typeorm";
 import { AuthCredentialSalt } from "../dto/auth-credentials.dto";
 import { User } from "../entity/user.entity";

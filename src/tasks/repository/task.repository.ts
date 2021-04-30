@@ -1,5 +1,5 @@
-import { User } from "src/auth/entity/user.entity";
-import { TaskStatus } from "src/enums/task-status.enum";
+import { User } from "../../auth/entity/user.entity";
+import { TaskStatus } from "../../enums/task-status.enum";
 import { EntityRepository, Repository } from "typeorm";
 import { CreateTaskDto } from "../dto/create-task.dto";
 import { GetTaskFilterDto } from "../dto/get-task-filter.dto";

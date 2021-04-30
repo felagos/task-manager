@@ -1,5 +1,5 @@
-import { User } from "src/auth/entity/user.entity";
-import { TaskStatus } from "src/enums/task-status.enum";
+import { User } from "../../auth/entity/user.entity";
+import { TaskStatus } from "../../enums/task-status.enum";
 import { BaseEntity, Column, Entity, JoinColumn, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity({ name: "tasks" })

@@ -1,13 +1,13 @@
 import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Query, Req, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { GetUser } from 'src/auth/decorators/get-user.decorators';
-import { User } from 'src/auth/entity/user.entity';
-import { TaskStatus } from 'src/enums/task-status.enum';
-import { CreateTaskDto } from 'src/tasks/dto/create-task.dto';
-import { GetTaskFilterDto } from 'src/tasks/dto/get-task-filter.dto';
-import { Task } from 'src/tasks/enitty/task.entity';
-import { TaskStatusValidatorPipe } from 'src/tasks/pipes/task-status-validator.pipe';
-import { TasksService } from 'src/tasks/services/tasks/tasks.service';
+import { GetUser } from '../../../auth/decorators/get-user.decorators';
+import { User } from '../../../auth/entity/user.entity';
+import { TaskStatus } from '../../../enums/task-status.enum';
+import { CreateTaskDto } from '../../dto/create-task.dto';
+import { GetTaskFilterDto } from '../../dto/get-task-filter.dto';
+import { Task } from '../../enitty/task.entity';
+import { TaskStatusValidatorPipe } from '../../pipes/task-status-validator.pipe';
+import { TasksService } from '../../services/tasks/tasks.service';
 
 @Controller('tasks')
 @UseGuards(AuthGuard())

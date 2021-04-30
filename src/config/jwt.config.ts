@@ -1,5 +1,5 @@
 import { JwtModuleOptions } from "@nestjs/jwt";
-import { ENV } from "src/env/env";
+import { ENV } from "../env/env";
 
 export const jwtConfig: JwtModuleOptions = {
     secret: ENV.secret,
