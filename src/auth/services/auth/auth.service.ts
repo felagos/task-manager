@@ -24,7 +24,7 @@ export class AuthService {
         const { username, password } = credentials;
         const user = await this.userRepository.findOne({ username });
 
-        if(!user) throw new NotFoundException(`Username ${username} not found`);
+        if (!user) throw new NotFoundException(`Username ${username} not found`);
 
         return await this.encryptService.validatePassword(password, user.password, user.salt);
     }
@@ -32,13 +32,12 @@ export class AuthService {
     async signIn(credentials: AuthCredentialsDto) {
         const isValidPassword = await this.validatePassword(credentials);
 
-        if(!isValidPassword) throw new UnauthorizedException("Invalid credentials");
+        if (!isValidPassword) throw new UnauthorizedException("Invalid credentials");
 
-        const payload: JwtPayload = {username: credentials.username};
+        const payload: JwtPayload = { username: credentials.username };
         const accessToken = this.jwtService.sign(payload);
 
         return { accessToken };
     }
-
 
 }

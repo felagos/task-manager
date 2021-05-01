@@ -15,4 +15,28 @@ describe('EncryptService', () => {
   it('should be defined', () => {
     expect(service).toBeDefined();
   });
+
+  it("get salt", async () => {
+    const salt = await service.generateSalt();
+
+    expect(salt).not.toBeNull();
+  });
+
+  it("generate hash", async () => {
+    const salt = await service.generateSalt();
+    const hashed = await service.hashPassword("123123", salt); 
+
+    expect(hashed).not.toBeNull();
+  });
+
+  it("validate password", async () => {
+    const password= "123123"
+    const salt = await service.generateSalt();
+    const hashed = await service.hashPassword(password, salt); 
+
+    const response = await service.validatePassword(password, hashed, salt);
+
+    expect(response).toBeTruthy();
+  });
+
 });
