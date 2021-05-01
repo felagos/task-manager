@@ -1,93 +1,90 @@
-import { NotFoundException, UnauthorizedException } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
-import { Test, TestingModule } from '@nestjs/testing';
-import { AuthCredentialsDto } from '../../dto/auth-credentials.dto';
-import { UserRepository } from '../../repository/user.repository';
-import { EncryptService } from '../encrypt/encrypt.service';
-import { AuthService } from './auth.service';
+import { NotFoundException, UnauthorizedException } from "@nestjs/common";
+import { JwtService } from "@nestjs/jwt";
+import { Test, TestingModule } from "@nestjs/testing";
+import { AuthCredentialsDto } from "../../dto/auth-credentials.dto";
+import { UserRepository } from "../../repository/user.repository";
+import { EncryptService } from "../encrypt/encrypt.service";
+import { AuthService } from "./auth.service";
 
 const mockUserRepository = () => ({
-  singUp: jest.fn(),
-  findOne: jest.fn()
+	singUp: jest.fn(),
+	findOne: jest.fn(),
 });
 
 const mockJwtService = () => ({
-  sign: jest.fn().mockReturnValue(Date.now().toString())
+	sign: jest.fn().mockReturnValue(Date.now().toString()),
 });
 
 const mockEncryptService = () => ({
-  validatePassword: jest.fn(),
-  generateSalt: jest.fn().mockResolvedValue(Date.now().toString()),
-  hashPassword: jest.fn().mockResolvedValue(Date.now().toString())
+	validatePassword: jest.fn(),
+	generateSalt: jest.fn().mockResolvedValue(Date.now().toString()),
+	hashPassword: jest.fn().mockResolvedValue(Date.now().toString()),
 });
 
 const mockUser: any = {
-  id: Date.now(),
-  username: ""
+	id: Date.now(),
+	username: "",
 };
 
 const credentialsDto: AuthCredentialsDto = {
-  password: "test",
-  username: "test"
+	password: "test",
+	username: "test",
 };
 
-describe('AuthService', () => {
-  let service: AuthService;
-  let userRepository: UserRepository;
-  let encryptService: EncryptService;
+describe("AuthService", () => {
+	let service: AuthService;
+	let userRepository: UserRepository;
+	let encryptService: EncryptService;
 
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        AuthService,
-        { provide: EncryptService, useFactory: mockEncryptService },
-        { provide: JwtService, useFactory: mockJwtService },
-        { provide: UserRepository, useFactory: mockUserRepository }
-      ],
-    }).compile();
+	beforeEach(async () => {
+		const module: TestingModule = await Test.createTestingModule({
+			providers: [
+				AuthService,
+				{ provide: EncryptService, useFactory: mockEncryptService },
+				{ provide: JwtService, useFactory: mockJwtService },
+				{ provide: UserRepository, useFactory: mockUserRepository },
+			],
+		}).compile();
 
-    service = module.get<AuthService>(AuthService);
-    userRepository = module.get<UserRepository>(UserRepository);
-    encryptService = module.get<EncryptService>(EncryptService);
-  });
+		service = module.get<AuthService>(AuthService);
+		userRepository = module.get<UserRepository>(UserRepository);
+		encryptService = module.get<EncryptService>(EncryptService);
+	});
 
-  it('should be defined', () => {
-    expect(service).toBeDefined();
-  });
+	it("should be defined", () => {
+		expect(service).toBeDefined();
+	});
 
-  describe('singUp', () => {
+	describe("singUp", () => {
+		it("do signup user", async () => {
+			await service.signUp(credentialsDto);
+			expect(userRepository.singUp).toHaveBeenCalled();
+		});
+	});
 
-    it("do signup user", async () => {
-      await service.signUp(credentialsDto);
-      expect(userRepository.singUp).toHaveBeenCalled();
-    });
+	describe("sigin", () => {
+		it("error sigin valid credentials", async () => {
+			userRepository.findOne = jest.fn().mockResolvedValue(mockUser);
+			encryptService.validatePassword = jest.fn().mockResolvedValue(true);
 
-  });
+			const response = await service.signIn(credentialsDto);
 
-  describe('sigin', () => {
+			expect(response.accessToken).toBeDefined();
+		});
 
-    it("error sigin valid credentials", async () => {
-      userRepository.findOne = jest.fn().mockResolvedValue(mockUser);
-      encryptService.validatePassword = jest.fn().mockResolvedValue(true);
+		it("error sigin invalid credentials", async () => {
+			userRepository.findOne = jest.fn().mockResolvedValue(mockUser);
+			encryptService.validatePassword = jest.fn().mockResolvedValue(false);
 
-      const response = await service.signIn(credentialsDto);
+			expect(service.signIn(credentialsDto)).rejects.toThrow(
+				UnauthorizedException
+			);
+		});
 
-      expect(response.accessToken).toBeDefined();
-    });
+		it("error sigin user not found", async () => {
+			userRepository.findOne = jest.fn().mockResolvedValue(false);
 
-    it("error sigin invalid credentials", async () => {
-      userRepository.findOne = jest.fn().mockResolvedValue(mockUser);
-      encryptService.validatePassword = jest.fn().mockResolvedValue(false);
-
-      expect(service.signIn(credentialsDto)).rejects.toThrow(UnauthorizedException);
-    });
-
-    it("error sigin user not found", async () => {
-      userRepository.findOne = jest.fn().mockResolvedValue(false);
-
-      expect(service.signIn(credentialsDto)).rejects.toThrow(NotFoundException);
-    });
-
-  });
-
+			expect(service.signIn(credentialsDto)).rejects.toThrow(NotFoundException);
+		});
+	});
 });

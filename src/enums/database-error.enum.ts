@@ -1,3 +1,3 @@
 export enum DatabaseError {
-    DUPLICATED = "23505"
+	DUPLICATED = "23505",
 }
