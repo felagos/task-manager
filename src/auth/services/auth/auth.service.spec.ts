@@ -1,4 +1,4 @@
-import { UnauthorizedException } from '@nestjs/common';
+import { NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthCredentialsDto } from '../../dto/auth-credentials.dto';
@@ -80,6 +80,12 @@ describe('AuthService', () => {
       encryptService.validatePassword = jest.fn().mockResolvedValue(false);
 
       expect(service.signIn(credentialsDto)).rejects.toThrow(UnauthorizedException);
+    });
+
+    it("error sigin user not found", async () => {
+      userRepository.findOne = jest.fn().mockResolvedValue(false);
+
+      expect(service.signIn(credentialsDto)).rejects.toThrow(NotFoundException);
     });
 
   });
